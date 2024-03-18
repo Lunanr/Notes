@@ -1,10 +1,10 @@
 import React from "react";
 
-function NoteItemHeader ({title,date}){
+function NoteItemHeader ({title,createdAt}){
     return(
         <div className="note-item__content">
             <h2 className="note-item__title">{title}</h2>
-            <p className="note-item__date">{date}</p>
+            <p className="note-item__date">{createdAt}</p>
         </div>
     );
 }
