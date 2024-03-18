@@ -1,7 +1,7 @@
 import React from "react";
 import NoteItem from "./NoteItem";
 
-function NoteList ({notes, onDelete, onArchive}){
+function NoteList ({notes, onDelete}){
     return(
         <div className="note-list">
             {notes.length > 0 ? (
@@ -9,16 +9,13 @@ function NoteList ({notes, onDelete, onArchive}){
                     <NoteItem
                     key={note.id}
                     id={note.id}
-                    createdAt={note.createdAt}
                     onDelete={onDelete}
-                    onArchive={onArchive}
                     {...note}/>
-                ))
-            ) : (
-                <p className="note-list__empty-message">Tidak Ada Catatan.</p>    
-            )}
+                ))) : (
+                    <p className="note-list__empty-message">Catatan Tidak Tersedia</p>
+                )}
         </div>
-    );
+    )
 }
 
 export default NoteList;

@@ -1,18 +1,18 @@
 import React from "react";
-import NoteItemHeader from "./NoteItemHeader";
-import NotesItemBody from "./NotesItemBody";
+import NoteItemContent from "./NoteItemContent";
 import DeleteButton from "./DeleteButton";
 import ArchiveButton from "./ArchiveButton";
 
-function NoteItem({title, createdAt, body, id, onDelete, onArchive}){
+function NoteItem({title, body, createdAt, id, onDelete, archived}){
     return(
         <div className="note-item">
-            <NoteItemHeader title={title} createdAt={createdAt} />
-            <NotesItemBody body={body} />
-            <DeleteButton id={id} onDelete={onDelete}/>
-            <ArchiveButton id={id} onArchive={onArchive}/>
+            <NoteItemContent title={title} body={body} createdAt={createdAt}/>
+            <div className="note-item__action">
+                <DeleteButton id={id} onDelete={onDelete}/>
+                <ArchiveButton id={id} archived={archived}/>
+            </div>
         </div>
-    );
+    )
 }
 
 export default NoteItem;

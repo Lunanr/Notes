@@ -1,7 +1,7 @@
 import React from "react";
 import NoteList from "./NoteList";
 import NoteInput from "./NoteInput";
-import { getInitialData, showFormattedDate } from "../utils/index";
+import { getInitialData, showFormattedDate } from "../utils";
 
 class NoteApp extends React.Component{
     constructor(props){
@@ -11,33 +11,31 @@ class NoteApp extends React.Component{
         }
 
         this.onDeleteHandler = this.onDeleteHandler.bind(this);
-        this.onArchiveHandler = this.onArchiveHandler.bind(this);
     }
 
     onDeleteHandler(id){
-        const notes = this.state.notes.filter(note => note.id !== id);
-        this.setState({notes});
-    }
-
-    onArchiveHandler(id){
-        const notes = this.state.notes.filter(note => note.id !== id);
+        const notes = this.state.notes.filter(notes => notes.id !== id);
         this.setState({notes});
     }
 
     render(){
-        const formatedNotes = this.state.notes.map((note) => ({...note, createdAt:showFormattedDate(note.createdAt)}))
+        const formattedNotes = this.state.notes.map((note) => ({
+            ...note,
+            createdAt: showFormattedDate(note.createdAt),
+        }));
         return(
-            <React.Fragment>
-            <div className="note-app__header">
-                <h1>Notes</h1>
+            <div className="note-app">
+                <div className="note-app__header">
+                    <h1>Notes</h1>
+                </div>
+                <div className="note-app__body">
+                    {/* <h2>Tambah Catatan</h2> */}
+                    <NoteInput/>
+                    <h2>Catatan Kaki</h2>
+                    <NoteList notes={formattedNotes} onDelete={this.onDeleteHandler}/>
+                </div>
             </div>
-            <NoteInput/>
-            <div className="note-app__body">
-                <h2>Catatan Aktif</h2>
-                <NoteList notes={formatedNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
-            </div>
-            </React.Fragment>  
-        );
+        )
     }
 }
 

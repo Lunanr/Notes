@@ -1,12 +1,13 @@
 import React from "react";
 
-function NoteItemHeader ({title,createdAt}){
+function NoteItemContent ({title, createdAt, body}){
     return(
         <div className="note-item__content">
             <h2 className="note-item__title">{title}</h2>
             <p className="note-item__date">{createdAt}</p>
+            <p className="note-item__body">{body}</p>
         </div>
     );
 }
 
-export default NoteItemHeader;
+export default NoteItemContent;
