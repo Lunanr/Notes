@@ -59,6 +59,7 @@ class NoteApp extends React.Component{
     render(){
         const {notes, search} = this.state;
 
+        // includes untuk mengecek char
         const filteredNotes = notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()));
 
         const formattedNotes = filteredNotes.map((note) => ({
