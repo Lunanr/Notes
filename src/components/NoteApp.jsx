@@ -2,93 +2,98 @@ import React from "react";
 import NotesList from "./NotesList";
 import NoteInput from "./NoteInput";
 import SearchNotes from "./SearchNotes";
-import { getInitialData, showFormattedDate } from "../utils";
+import { getInitialData } from "../utils";
 
-class NoteApp extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            notes: getInitialData(),
-            search: '',
-        }
+class NoteApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      notes: getInitialData(),
+      search: "",
+    };
 
-        this.onDeleteHandler = this.onDeleteHandler.bind(this);
-        this.onAddNoteHandler = this.onAddNoteHandler.bind(this);
-        this.onArchiveHandler = this.onArchiveHandler.bind(this);
-        this.onSearch = this.onSearch.bind(this);
-    }
+    this.onDeleteHandler = this.onDeleteHandler.bind(this);
+    this.onAddNoteHandler = this.onAddNoteHandler.bind(this);
+    this.onArchiveHandler = this.onArchiveHandler.bind(this);
+    this.onSearch = this.onSearch.bind(this);
+  }
 
-    onDeleteHandler(id){
-        const notes = this.state.notes.filter(notes => notes.id !== id);
-        this.setState({notes});
-    }
+  onDeleteHandler(id) {
+    const notes = this.state.notes.filter((notes) => notes.id !== id);
+    this.setState({ notes });
+  }
 
-    onAddNoteHandler({title, body}){
-        this.setState((prevState) => {
-            return{
-                notes: [
-                    ...prevState.notes,
-                    {
-                        id: +new Date(),
-                        title,
-                        body,
-                        createdAt: new Date().toISOString(),
-                        archived: false
-                    }
-                ]
-            }
-        })
-        debugger;
-    }
+  onAddNoteHandler({ title, body }) {
+    this.setState((prevState) => {
+      return {
+        notes: [
+          ...prevState.notes,
+          {
+            id: +new Date(),
+            title,
+            body,
+            createdAt: new Date().toISOString(),
+            archived: false,
+          },
+        ],
+      };
+    });
+  }
 
-    // Membuat objek baru
-    // !note.archived adalah fungsi untuk membalikkan nilai seblumnya
-    onArchiveHandler(id){
-        const notes = this.state.notes.map(note => note.id === id ? {...note, archived : !note.archived} : note);
-        this.setState({notes});
-    }
+  // Membuat objek baru
+  // !note.archived adalah fungsi untuk membalikkan nilai seblumnya
+  onArchiveHandler(id) {
+    const notes = this.state.notes.map((note) =>
+      note.id === id ? { ...note, archived: !note.archived } : note
+    );
+    this.setState({ notes });
+  }
 
-    onSearch(title){
-        this.setState(() => {
-            return{
-                search : title
-            }
-        })
-    }
+  onSearch(title) {
+    this.setState(() => {
+      return {
+        search: title,
+      };
+    });
+  }
 
-    render(){
-        const {notes, search} = this.state;
+  render() {
+    // includes untuk mengecek char
+    const notes = this.state.notes.filter((note) =>
+      note.title.toLowerCase().includes(this.state.search.toLocaleLowerCase())
+    );
 
-        // includes untuk mengecek char
-        const filteredNotes = notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()));
+    const daftarNotes = notes.filter((note) => {
+      return note.archived === false;
+    });
+    const archivedNotes = notes.filter((note) => {
+      return note.archived === true;
+    });
 
-        const formattedNotes = filteredNotes.map((note) => ({
-            ...note,
-            createdAt: showFormattedDate(note.createdAt),
-        }));
-        const daftarNotes = formattedNotes.filter((note) => {
-            return note.archived === false;
-        })
-        const archivedNotes = formattedNotes.filter((note) => {
-            return note.archived === true;
-        })
-        
-        return(
-            <div className="note-app">
-                <div className="note-app__header">
-                    <h1>Notes</h1>
-                    <SearchNotes onSearch={this.onSearch}/>
-                </div>
-                <div className="note-app__body">
-                    <NoteInput addNote={this.onAddNoteHandler}/>
-                    <h2>Catatan Kaki</h2>
-                    <NotesList notes={daftarNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
-                    <h2>Arsip</h2>
-                    <NotesList notes={archivedNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
-                </div>
-            </div>
-        )
-    }
+    return (
+      <div className="note-app">
+        <div className="note-app__header">
+          <h1>Notes</h1>
+          <SearchNotes onSearch={this.onSearch} />
+        </div>
+        <div className="note-app__body">
+          <NoteInput addNote={this.onAddNoteHandler} />
+          <h2>Catatan Kaki</h2>
+          <NotesList
+            notes={daftarNotes}
+            onDelete={this.onDeleteHandler}
+            onArchive={this.onArchiveHandler}
+          />
+          <h2>Arsip</h2>
+          <NotesList
+            notes={archivedNotes}
+            onDelete={this.onDeleteHandler}
+            onArchive={this.onArchiveHandler}
+          />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default NoteApp;
