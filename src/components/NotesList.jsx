@@ -9,13 +9,9 @@ function NotesList ({notes, onDelete, onArchive, onUnarchive}){
                     <NoteItem
                     key={note.id}
                     id={note.id}
-                    title={note.title}
-                    body={note.body}
-                    createdAt={note.createdAt}
-                    archived={note.archived}
                     onDelete={onDelete}
                     onArchive={onArchive}
-                    onUnarchive={onUnarchive}
+                    isArchive={note.archived}
                     {...note}/>
                 ))) : (
                     <p className="notes-list__empty-message">Catatan Tidak Tersedia</p>

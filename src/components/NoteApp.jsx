@@ -1,6 +1,7 @@
 import React from "react";
 import NotesList from "./NotesList";
 import NoteInput from "./NoteInput";
+import SearchNotes from "./SearchNotes";
 import { getInitialData, showFormattedDate } from "../utils";
 
 class NoteApp extends React.Component{
@@ -8,19 +9,18 @@ class NoteApp extends React.Component{
         super(props);
         this.state = {
             notes: getInitialData(),
-            archivedNotes: [],
+            search: '',
         }
 
         this.onDeleteHandler = this.onDeleteHandler.bind(this);
         this.onAddNoteHandler = this.onAddNoteHandler.bind(this);
         this.onArchiveHandler = this.onArchiveHandler.bind(this);
-        this.onUnarchiveHandler = this.onUnarchiveHandler.bind(this);
+        this.onSearch = this.onSearch.bind(this);
     }
 
     onDeleteHandler(id){
         const notes = this.state.notes.filter(notes => notes.id !== id);
-        const archivedNotes = this.state.archivedNotes.filter(note => note.id !== id);
-        this.setState({notes, archivedNotes});
+        this.setState({notes});
     }
 
     onAddNoteHandler({title, body}){
@@ -33,60 +33,57 @@ class NoteApp extends React.Component{
                         title,
                         body,
                         createdAt: new Date().toISOString(),
-                        arhived: false
+                        archived: false
                     }
                 ]
             }
         })
+        debugger;
     }
 
+    // Membuat objek baru
+    // !note.archived adalah fungsi untuk membalikkan nilai seblumnya
     onArchiveHandler(id){
-        const notes = this.state.notes.map(note => {
-            if(note.id === id){
-                return{
-                    ...note, archived:true
-                };
-            }
-            return note;
-        });
-        const archivedNote = this.state.notes.find(note => note.id === id);
-        this.setState(prevState => ({
-            notes : notes.filter(note => note.id !== id),
-            archivedNotes: [...prevState.archivedNotes, archivedNote]
-        }));
+        const notes = this.state.notes.map(note => note.id === id ? {...note, archived : !note.archived} : note);
+        this.setState({notes});
     }
 
-    onUnarchiveHandler(id){
-        const unarchivedNote = this.state.archivedNotes.find(note => note.id === id);
-        const archivedNotes = this.state.archivedNotes.filter(note => note.id !== id);
-        this.setState(prevState => ({
-            notes: [...prevState.notes, {...unarchivedNote, archived: false}],
-            archivedNotes
-        }))
+    onSearch(title){
+        this.setState(() => {
+            return{
+                search : title
+            }
+        })
     }
-    
 
     render(){
-        const formattedNotes = this.state.notes.map((note) => ({
+        const {notes, search} = this.state;
+
+        const filteredNotes = notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()));
+
+        const formattedNotes = filteredNotes.map((note) => ({
             ...note,
             createdAt: showFormattedDate(note.createdAt),
         }));
-        const formattedArchivedNotes = this.state.archivedNotes.map((note) => ({
-            ...note,
-            createdAt: showFormattedDate(note.createdAt),
-        }))
+        const daftarNotes = formattedNotes.filter((note) => {
+            return note.archived === false;
+        })
+        const archivedNotes = formattedNotes.filter((note) => {
+            return note.archived === true;
+        })
+        
         return(
             <div className="note-app">
                 <div className="note-app__header">
                     <h1>Notes</h1>
-                    <input placeholder="Masukan catatanmu disini"/>
+                    <SearchNotes onSearch={this.onSearch}/>
                 </div>
                 <div className="note-app__body">
                     <NoteInput addNote={this.onAddNoteHandler}/>
                     <h2>Catatan Kaki</h2>
-                    <NotesList notes={formattedNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
+                    <NotesList notes={daftarNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
                     <h2>Arsip</h2>
-                    <NotesList notes={formattedArchivedNotes} onDelete={this.onDeleteHandler} onUnarchive={this.onUnarchiveHandler}/>
+                    <NotesList notes={archivedNotes} onDelete={this.onDeleteHandler} onArchive={this.onArchiveHandler}/>
                 </div>
             </div>
         )
