@@ -1,51 +1,36 @@
 import React from "react";
 
 class NoteInput extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    title: "",
+    body: "",
+    limit: 50,
+  };
 
-    this.state = {
+  onTitleChangeEventHandler = (event) => {
+    if (this.state.limit >= 0 && event.target.value.length <= 50) {
+      this.setState(() => ({
+        title: event.target.value,
+        limit: 50 - event.target.vaue.length,
+      }));
+    }
+  };
+
+  onBodyChangeEventHandler = (event) => {
+    this.setState(() => ({
+      body: event.target.value,
+    }));
+  };
+
+  onSubmitChangeEventHandler = (event) => {
+    event.preventDefault();
+    this.props.addNote(this.state);
+    this.setState(() => ({
       title: "",
       body: "",
       limit: 50,
-    };
-
-    this.onTitleChangeEventHandler = this.onTitleChangeEventHandler.bind(this);
-    this.onBodyChangeEventHandler = this.onBodyChangeEventHandler.bind(this);
-    this.onSubmitChangeEventHandler =
-      this.onSubmitChangeEventHandler.bind(this);
-  }
-
-  onTitleChangeEventHandler(event) {
-    if (this.state.limit >= 0 && event.target.value.length <= 50) {
-      this.setState(() => {
-        return {
-          title: event.target.value,
-          limit: 50 - event.target.value.length,
-        };
-      });
-    }
-  }
-
-  onBodyChangeEventHandler(event) {
-    this.setState(() => {
-      return {
-        body: event.target.value,
-      };
-    });
-  }
-
-  onSubmitChangeEventHandler(event) {
-    event.preventDefault();
-    this.props.addNote(this.state);
-    this.setState(() => {
-      return {
-        title: "",
-        body: "",
-        limit: 50,
-      };
-    });
-  }
+    }));
+  };
 
   render() {
     return (
