@@ -4,7 +4,7 @@ import NoteItem from "./NoteItem";
 function NotesList({ notes, onDelete, onArchive }) {
   return (
     <div className="notes-list">
-      {notes.length > 0 ? (
+      {(notes.length) ? (
         notes.map((note) => (
           <NoteItem
             key={note.id}
